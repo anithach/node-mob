@@ -1,0 +1,23 @@
+{
+  "name"    : "labeldocs",
+  "version" : "0.0.1",
+  "private" : true,
+  "scripts" : 
+  {
+    "start" : "node app.js"
+  },
+  
+  "dependencies": 
+  {
+    "express":          "*",
+    "mongodb":          "*",
+    "mongoose":         "*",
+    "node-uuid":        "*",
+    "bcrypt-nodejs":    "*",
+    "express-session":  "*",
+    "jade":             "*",
+    "passport" :        "*",
+    "passport-local" :  "*",
+    "connect-flash" :   "*"
+  }
+}
