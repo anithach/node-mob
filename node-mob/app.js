@@ -25,8 +25,9 @@ mongoose.connect(ldprops.dburl,ldprops.mongo_options, function(err){
 
 
 app.get('/getTokenByAuth', function(req, res){
+	console.log('--- start getTokenByAuth --');
     var auth = req.headers['authorization'];
-    
+    console.log('auth -- '+auth);
     if(!auth) {
         res.status(401);
     }
@@ -38,20 +39,26 @@ app.get('/getTokenByAuth', function(req, res){
             var creds = plain_auth.split(':');
             var username = creds[0];
             var password = creds[1];
+            console.log('username -- '+username);
+            console.log('password -- '+password);
+            
         
             User.findOne({ username: username },function(err, user)   {
                 if(err){
                     res.status(500);
+                    console.log('err -- '+err);
                 }
                 else if(user == null){
                     res.status(400);
 					res.send( JSON.parse('{"resultcode": "FAIL", "message":"user. not valid"}') );               }
                 else{ 
-                    if(user.status!='ACTIVE'){
+                    if(user.status!=1){
                         res.status(401);
+                        console.log('res -- '+res);
                     }
                     else if(!user.validPassword(password)){
                         res.status(401);
+                        console.log('validPassword -- '+res);
                     }
                     else{
                         user.mapptoken = nuuid.v4();
@@ -59,9 +66,14 @@ app.get('/getTokenByAuth', function(req, res){
                         {
                             if(err){
                                 res.status(200);
+                                res.send(200);
+                                console.log('save error -- '+res);
                             }
                             else{
-                                res.status(200);
+                               // res.status(200).send({ error: "boo:(" });
+                            	// res.send(200);
+                            	res.send( JSON.parse('{"resultcode": "SUCCESS", "matoken":"'+user.mapptoken+'"}') );     
+                                console.log('save no error -- '+res);
                             }
                         });   
                     	}
@@ -72,15 +84,16 @@ app.get('/getTokenByAuth', function(req, res){
         }
         catch (error){
             res.status(500);
+            console.log('500 error -- '+res);
         }
     }
     
 });
 
-app.get('/getLabelDocBackup', function(req, res){
+app.get('/getLabelDoc', function(req, res){
     var apptoken = req.headers['apptoken'];
     var bqcode   = req.headers['bqcode'];
-    
+    console.log('bqcode -- '+bqcode);
     if(!apptoken){
         res.status(403);
     }
@@ -112,7 +125,7 @@ app.get('/getLabelDocBackup', function(req, res){
 });
 
 
-app.get('/getLabelDoc', function(req, res){
+app.get('/getLabelDocNEW', function(req, res){
 	console.log('getLabelDoc  -- '+req.headers['bqcode']);
     var bqcode   = req.headers['bqcode'];
     
